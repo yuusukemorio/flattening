@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flattening</title>
+
+    <style>
+        body {
+            margin: 0;
+        }
+
+        .link-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .link-list li {
+            margin-bottom: 0.5em;
+        }
+
+        /* 上レイヤー */
+        #layer {
+            position: fixed;
+            inset: 0;
+            background: white;
+            display: none;
+            overflow: auto;
+            z-index: 10;
+        }
+
+        #close {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Flattening</h1>
+
+    <ul class="link-list">
+        <li>
+            <a href="text/50m/50m先.html" data-load>
+                2025.12.18　　　丸みを帯びた50m先の下に、工事中を表すピクトグラムが...
+            </a>
+        </li>
+    </ul>
+
+    <!-- 上レイヤー -->
+    <div id="layer">
+        <div id="close">close</div>
+        <div id="content"></div>
+    </div>
+
+    <script>
+        document.querySelectorAll("[data-load]").forEach(link => {
+            link.addEventListener("click", async e => {
+                e.preventDefault();
+
+                const res = await fetch(link.href);
+                const html = await res.text();
+
+                document.getElementById("content").innerHTML = html;
+                document.getElementById("layer").style.display = "block";
+            });
+        });
+
+        document.getElementById("close").onclick = () => {
+            document.getElementById("layer").style.display = "none";
+            document.getElementById("content").innerHTML = "";
+        };
+    </script>
+</body>
+
+</html>
